@@ -5,10 +5,15 @@ import Vue from 'vue';
 
 // use
 Vue.use(VueRouter)
+
+// 导入 登录页面组件
+import login from '../views/login/login.vue'
+
 // 规则
 const routes = [
-    // path: "",
-    // component: 
+   { path: "/login",
+    component: login
+}
 ]
 // 创建路由实例
 const router = new VueRouter({

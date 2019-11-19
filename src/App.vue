@@ -1,11 +1,11 @@
 <template>
-  <el-button type="primary">主要按钮</el-button>
+  <router-view></router-view>
 </template>
 
 <script>
 export default {
   // 组件名
-  name : '#app'
+  name : 'app'
 }
 </script>
 
