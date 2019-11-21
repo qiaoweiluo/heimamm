@@ -60,7 +60,7 @@
     <img src="../../assets/login_banner_ele.png" alt class="banner" />
 
     <!-- 注册对话框 -->
-    <el-dialog title="用户注册" :visible.sync="showReg">
+    <el-dialog title="用户注册" class="reg-dialog" :visible.sync="showReg">
       <el-form :model="registerForm">
         <!-- 头像 -->
         <el-form-item label="头像" :label-width="formLabelWidth">
