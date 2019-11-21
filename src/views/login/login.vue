@@ -44,7 +44,7 @@
         </el-form-item>
 
         <!-- 协议 -->
-        <el-checkbox class="checkbox">
+        <el-checkbox class="checkbox" v-model="checked">
           我已阅读并同意
           <el-link type="primary">用户协议</el-link>和
           <el-link type="primary">隐私条款</el-link>
@@ -110,12 +110,21 @@ export default {
         ]
       },
       // 验证码地址
-      captchaSrc: "http://183.237.67.218:3002/captcha?type=login"
+      captchaSrc: "http://183.237.67.218:3002/captcha?type=login",
+      // 是否勾选
+      checked: true,
     };
   },
   methods: {
     // 点击登录按钮登录
     submitForm(formName) {
+      // 布尔判断 如果为false
+      if (!this.checked) {
+        this.$message.warning("未勾选用户协议，必须要勾！！！");
+        return;
+      }
+      // this.$refs['ruleForm']==> 获取饿了么的表单
+      // 饿了么的表单.validate()
       this.$refs[formName].validate(valid => {
         if (valid) {
           // valid 不为空说明 成功
