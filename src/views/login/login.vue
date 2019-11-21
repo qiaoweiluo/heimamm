@@ -80,16 +80,16 @@
           <el-input v-model="registerForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 邮箱 -->
-        <el-form-item label="昵称" :label-width="formLabelWidth">
-          <el-input v-model="registerForm.name" autocomplete="off"></el-input>
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
+          <el-input v-model="registerForm.email" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 手机 -->
         <el-form-item label="手机" :label-width="formLabelWidth">
-          <el-input v-model="registerForm.name" autocomplete="off"></el-input>
+          <el-input v-model="registerForm.phone" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="registerForm.name" autocomplete="off"></el-input>
+          <el-input v-model="registerForm.password" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 图形码 -->
         <el-form-item label="图形码" :label-width="formLabelWidth">
@@ -197,7 +197,16 @@ export default {
       showReg: false,
       // 注册表单数据
       registerForm: {
-        name: ""
+       name:"",
+        phone: "",
+        email:"",
+        // 用户头像
+        avatar:"",
+        password:"",
+        // 短信验证码
+        rcode:"",
+        // 图形验证码
+        code: ""
       },
       // 文字宽度
       formLabelWidth: "67px",
@@ -256,6 +265,95 @@ export default {
       // 绝对不会重复 时间戳 获取1970年到现在的时间毫秒数
       this.captchaSrc = `http://183.237.67.218:3002/captcha?type=login&${Date.now()}`;
       // this.captchaSrc = `http://183.237.67.218:3002/captcha?type=login`
+    },
+    // 图片上传的方法
+    // res 服务器返回的值
+    // file 文件信息
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      // window.console.log(res);
+      // 保存到表单中
+      this.registerForm.avatar = res.data.file_path;
+    },
+    // 文件上传之前对文件做一些限制
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    // 重新获取注册 图形验证码
+    changeRegCaptcha() {
+      // 修改地址
+      this.regCaptcha = `http://183.237.67.218:3002/captcha?type=sendsms&${Date.now()}`;
+    },
+    // 获取短信验证码
+    getMessage() {
+      // 非空判断
+      if (this.registerForm.phone.trim() == "") {
+        this.$message.warning("哥们，你的手机号呢！滑稽");
+        return;
+      }
+      // 格式判断
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (!reg.test(this.registerForm.phone)) {
+        this.$message.warning("老铁,你的手机是不是写错了呀！");
+        return;
+      }
+      // 说明 格式 内容都有
+      axios({
+        url: "http://183.237.67.218:3002/sendsms",
+        method: "post",
+        data: {
+          code: this.registerForm.code,
+          phone: this.registerForm.phone
+        },
+        // 跨域携带cookie
+        withCredentials: true
+      }).then(res => {
+        window.console.log(res);
+      });
+
+      let time = 60;
+      // 禁用按钮 开启定时器
+      this.isDisabled = true;
+      const interId = setInterval(() => {
+        // 递减
+        time--;
+        // 修改页面
+        this.btnTxt = `${time}S后再次获取`;
+        if (time == 0) {
+          clearInterval(interId);
+          // 重新启用按钮
+          this.isDisabled = false;
+          // 还原文本
+          this.btnTxt = "获取短信验证码"
+        }
+      }, 100);
+    },
+    // 用户注册
+    registerUser(){
+      axios({
+        url:"http://183.237.67.218:3002/register",
+        method:"post",
+        data:{
+          avatar:this.registerForm.avatar,
+          email:this.registerForm.email,
+          name:this.registerForm.name,
+          password:this.registerForm.password,
+          phone:this.registerForm.phone,
+          rcode:this.registerForm.rcode
+        },
+        withCredentials:true
+      }).then(res=>{
+        window.console.log(res);
+      })
     }
   }
 };
