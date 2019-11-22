@@ -60,8 +60,9 @@
     <img src="../../assets/login_banner_ele.png" alt class="banner" />
 
     <!-- 注册对话框 -->
-    <el-dialog title="用户注册" class="reg-dialog" :visible.sync="showReg">
-      <el-form :model="registerForm">
+     <el-dialog title="用户注册" class="reg-dialog" :visible.sync="showReg">
+      <!-- 表单 -->
+      <el-form :model="registerForm" :rules="registerRules" ref="registerForm">
         <!-- 头像 -->
         <el-form-item label="头像" :label-width="formLabelWidth">
           <el-upload
@@ -77,11 +78,11 @@
           </el-upload>
         </el-form-item>
         <!-- 昵称 -->
-        <el-form-item label="昵称" :label-width="formLabelWidth">
+        <el-form-item label="昵称" :label-width="formLabelWidth" prop="name">
           <el-input v-model="registerForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 邮箱 -->
-        <el-form-item label="邮箱" :label-width="formLabelWidth">
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
           <el-input v-model="registerForm.email" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 手机 -->
@@ -90,26 +91,39 @@
         </el-form-item>
         <!-- 密码 -->
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="registerForm.password" autocomplete="off"></el-input>
+          <el-input
+            v-model="registerForm.password"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <!-- 图形码 -->
         <el-form-item label="图形码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input v-model="registerForm.code" autocomplete="off"></el-input>
+              <el-input
+                v-model="registerForm.code"
+                autocomplete="off"
+              ></el-input>
             </el-col>
             <el-col :span="7" :offset="1">
               <!-- 图形验证码 -->
-              <img class="captcha" @click="changeRegCaptcha" :src="regCaptcha" alt />
+              <img
+                class="captcha"
+                @click="changeRegCaptcha"
+                :src="regCaptcha"
+                alt=""
+              />
             </el-col>
           </el-row>
         </el-form-item>
         <!-- 验证码 -->
-
         <el-form-item label="验证码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input v-model="registerForm.rcode" autocomplete="off"></el-input>
+              <el-input
+                v-model="registerForm.rcode"
+                autocomplete="off"
+              ></el-input>
             </el-col>
             <el-col :span="7" :offset="1">
               <!-- 获取手机验证码 -->
@@ -118,14 +132,15 @@
                 @click="getMessage"
                 type="primary"
                 :disabled="isDisabled"
-              >{{ btnTxt }}</el-button>
+                >{{ btnTxt }}</el-button
+              >
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="showReg = false">取 消</el-button>
+        <el-button type="primary" @click="registerUser">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -133,7 +148,12 @@
 
 <script>
 // 导入 axios
-import axios from "axios";
+// 已经全部抽取为方法了，不再需要axios
+// import axios from "axios";
+
+// 导入抽取的api 方法
+import { login, register,sendsms } from "../../api/api.js";
+
 export default {
   name: "login",
 
@@ -154,6 +174,24 @@ export default {
         } else {
           // 错误
           callback(new Error("手机号格式不对哦"));
+        }
+      }
+    };
+    // 校验 邮箱
+    const checkEmail = (rules, value, callback) => {
+      // value是值
+      if (!value) {
+        callback(new Error("邮箱不能为空"));
+      } else {
+        // 格式验证
+        const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        // 验证
+        if (reg.test(value)) {
+          // 对的
+          callback();
+        } else {
+          // 错误
+          callback(new Error("邮箱格式不对哦"));
         }
       }
     };
@@ -198,6 +236,18 @@ export default {
         // 图形验证码
         code: ""
       },
+       // 注册表单验证规则
+      registerRules: {
+        // 姓名
+        name: [{ required: true, message: "姓名不能为空哦", trigger: "blur" }],
+        // 邮箱
+        email: [
+          {
+            required: true,
+            validator: checkEmail
+          }
+        ]
+      },
       // 文字宽度
       formLabelWidth: "67px",
       // 图片地址
@@ -225,15 +275,21 @@ export default {
           // valid 不为空说明 成功
           // alert("submit!");
           // 接口调用
-          axios({
-            url: "http://183.237.67.218:3002/login",
-            method: "post",
-            data: {
-              phone: this.loginForm.phone,
-              password: this.loginForm.password,
-              code: this.loginForm.captcha
-            },
-            withCredentials: true
+          // axios({
+          //   url: "http://183.237.67.218:3002/login",
+          //   method: "post",
+          //   data: {
+          //     phone: this.loginForm.phone,
+          //     password: this.loginForm.password,
+          //     code: this.loginForm.captcha
+          //   },
+          //   withCredentials: true
+          // })
+          
+          login({
+            phone: this.loginForm.phone,
+            password: this.loginForm.password,
+            code: this.loginForm.captcha
           }).then(res => {
             //成功回调
             // window.console.log(res)
@@ -297,16 +353,21 @@ export default {
         return;
       }
       // 说明 格式 内容都有
-      axios({
-        url: "http://183.237.67.218:3002/sendsms",
-        method: "post",
-        data: {
+      // axios({
+      //   url: "http://183.237.67.218:3002/sendsms",
+      //   method: "post",
+      //   data: {
+      //     code: this.registerForm.code,
+      //     phone: this.registerForm.phone
+      //   },
+      //   // 跨域携带cookie
+      //   withCredentials: true
+      // })
+      
+      sendsms( {
           code: this.registerForm.code,
           phone: this.registerForm.phone
-        },
-        // 跨域携带cookie
-        withCredentials: true
-      }).then(res => {
+        }).then(res => {
         window.console.log(res);
       });
 
@@ -328,21 +389,41 @@ export default {
       }, 100);
     },
     // 用户注册
+    // 用户注册
     registerUser() {
-      axios({
-        url: "http://183.237.67.218:3002/register",
-        method: "post",
-        data: {
-          avatar: this.registerForm.avatar,
-          email: this.registerForm.email,
-          name: this.registerForm.name,
-          password: this.registerForm.password,
-          phone: this.registerForm.phone,
-          rcode: this.registerForm.rcode
-        },
-        withCredentials: true
-      }).then(res => {
-        window.console.log(res);
+      // this.$refs['ruleForm']==> 获取饿了么的表单
+      // 饿了么的表单.validate()
+      this.$refs.registerForm.validate(valid => {
+        if (valid) {
+          // window.alert("ok1");
+          // axios({
+          //   url: "http://183.237.67.218:3002/register",
+          //   method: "post",
+          //   data: {
+          //     avatar: this.registerForm.avatar,
+          //     email: this.registerForm.email,
+          //     name: this.registerForm.name,
+          //     password: this.registerForm.password,
+          //     phone: this.registerForm.phone,
+          //     rcode: this.registerForm.rcode
+          //   },
+          //   withCredentials: true
+          // })
+          register({
+            avatar: this.registerForm.avatar,
+            email: this.registerForm.email,
+            name: this.registerForm.name,
+            password: this.registerForm.password,
+            phone: this.registerForm.phone,
+            rcode: this.registerForm.rcode
+          }).then(res => {
+            window.console.log(res);
+          });
+        } else {
+          // 验证失败
+          window.console.log("error submit!!");
+          return false;
+        }
       });
     }
   }
