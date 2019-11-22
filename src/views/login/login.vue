@@ -95,30 +95,20 @@
         <el-form-item label="图形码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input
-                v-model="registerForm.code"
-                autocomplete="off"
-              ></el-input>
+              <el-input v-model="registerForm.code" autocomplete="off"></el-input>
             </el-col>
             <el-col :span="7" :offset="1">
               <!-- 图形验证码 -->
-              <img
-                class="captcha"
-                @click="changeRegCaptcha"
-                :src="regCaptcha"
-                alt=""
-              />
+              <img class="captcha" @click="changeRegCaptcha" :src="regCaptcha" alt />
             </el-col>
           </el-row>
         </el-form-item>
         <!-- 验证码 -->
+
         <el-form-item label="验证码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input
-                v-model="registerForm.rcode"
-                autocomplete="off"
-              ></el-input>
+              <el-input v-model="registerForm.rcode" autocomplete="off"></el-input>
             </el-col>
             <el-col :span="7" :offset="1">
               <!-- 获取手机验证码 -->
@@ -127,8 +117,7 @@
                 @click="getMessage"
                 type="primary"
                 :disabled="isDisabled"
-                >{{ btnTxt }}</el-button
-              >
+              >{{ btnTxt }}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -197,14 +186,14 @@ export default {
       showReg: false,
       // 注册表单数据
       registerForm: {
-       name:"",
+        name: "",
         phone: "",
-        email:"",
+        email: "",
         // 用户头像
-        avatar:"",
-        password:"",
+        avatar: "",
+        password: "",
         // 短信验证码
-        rcode:"",
+        rcode: "",
         // 图形验证码
         code: ""
       },
@@ -217,7 +206,7 @@ export default {
       // 短信验证码按钮文本
       btnTxt: "获取短信验证码",
       // 按钮是否禁用
-      isDisabled:false
+      isDisabled: false
     };
   },
   methods: {
@@ -333,27 +322,27 @@ export default {
           // 重新启用按钮
           this.isDisabled = false;
           // 还原文本
-          this.btnTxt = "获取短信验证码"
+          this.btnTxt = "获取短信验证码";
         }
       }, 100);
     },
     // 用户注册
-    registerUser(){
+    registerUser() {
       axios({
-        url:"http://183.237.67.218:3002/register",
-        method:"post",
-        data:{
-          avatar:this.registerForm.avatar,
-          email:this.registerForm.email,
-          name:this.registerForm.name,
-          password:this.registerForm.password,
-          phone:this.registerForm.phone,
-          rcode:this.registerForm.rcode
+        url: "http://183.237.67.218:3002/register",
+        method: "post",
+        data: {
+          avatar: this.registerForm.avatar,
+          email: this.registerForm.email,
+          name: this.registerForm.name,
+          password: this.registerForm.password,
+          phone: this.registerForm.phone,
+          rcode: this.registerForm.rcode
         },
-        withCredentials:true
-      }).then(res=>{
+        withCredentials: true
+      }).then(res => {
         window.console.log(res);
-      })
+      });
     }
   }
 };
@@ -448,7 +437,7 @@ export default {
       margin-top: 27px;
     }
   }
-   // 对话框中的 样式
+  /* 对话框中的 样式 */
   .captcha {
     height: 41px;
     width: 100%;
@@ -456,12 +445,12 @@ export default {
   .captcha-btn {
     width: 100%;
   }
-  // 对话框
+  /* 对话框 */
   .reg-dialog .el-dialog {
     width: 602px;
   }
   .reg-dialog {
-    // 头部
+    /* 头部 */
     .el-dialog__header {
       text-align: center;
       background: linear-gradient(to right, #01c5fa, #1394fa);
@@ -469,14 +458,14 @@ export default {
         color: white;
       }
     }
-    // 底部
+    /* 底部 */
     .dialog-footer {
       text-align: center;
     }
   }
 }
 
-// 头像组件样式
+/* 头像组件样式 */
 .avatar-uploader {
   text-align: center;
 }
