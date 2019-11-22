@@ -5,7 +5,7 @@
       <div class="left">
         <!-- 顶部的图标,点击旋转 -->
         <i class="el-icon-s-fold" @click="isCollapse = !isCollapse" :class="{ rotate: isCollapse }"></i>
-        <img src="../../assets/index-logo.png" alt />
+        <img class="logo" src="../../assets/index-logo.png" alt />
         <span class="title">黑马面面</span>
       </div>
       <div class="right">
@@ -18,31 +18,33 @@
     <el-container>
       <!-- 饿了么UI默认300px  -->
       <el-aside class="aside" style="width:auto">
-        <el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse">
-          <el-menu-item index="1">
+        <el-menu default-active="2" router class="el-menu-vertical-demo" :collapse="isCollapse">
+          <el-menu-item index="elicon">
             <!-- 图标 -->
-            <i class="el-icon-pie-chart"></i>
+            <i class="el-icon-pie-chart" ></i>
             <span slot="title">数据概览</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="userlist">
             <i class="el-icon-user"></i>
             <span slot="title">用户列表</span>
           </el-menu-item>
-          <el-menu-item index="3">
+          <el-menu-item index="edit">
             <i class="el-icon-edit-outline"></i>
             <span slot="title">题库列表</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item index="enterprise" >
             <i class="el-icon-office-building"></i>
             <span slot="title">企业列表</span>
           </el-menu-item>
-          <el-menu-item index="5">
+          <el-menu-item index="subject" >
             <i class="el-icon-notebook-2"></i>
             <span slot="title">学科列表</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
-      <el-main class="main">Main</el-main>
+      <el-main class="main">
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
