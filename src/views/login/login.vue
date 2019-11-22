@@ -51,7 +51,6 @@
         </el-checkbox>
 
         <!-- 登录 注册按钮 -->
-        <!-- loginForm需要加引号 表示传入一个参数 不加引号 表示调用一个方法 会自动解析变成一个变量 -->
         <el-button class="login-btn" @click="submitForm('loginForm')" type="primary">登录</el-button>
         <el-button class="reg-btn" @click="showReg = true" type="primary">注册</el-button>
       </el-form>
@@ -62,7 +61,7 @@
 
     <!-- 注册对话框 -->
     <el-dialog title="用户注册" class="reg-dialog" :visible.sync="showReg">
-      <el-form :model="registerForm" ref="registerForm" :rules="registerRules">
+      <el-form :model="registerForm">
         <!-- 头像 -->
         <el-form-item label="头像" :label-width="formLabelWidth">
           <el-upload
@@ -81,15 +80,15 @@
           <el-input v-model="registerForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 邮箱 -->
-        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
           <el-input v-model="registerForm.email" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 手机 -->
-        <el-form-item label="手机" :label-width="formLabelWidth" prop="phone">
+        <el-form-item label="手机" :label-width="formLabelWidth">
           <el-input v-model="registerForm.phone" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+        <el-form-item label="密码" :label-width="formLabelWidth">
           <el-input v-model="registerForm.password" autocomplete="off"></el-input>
         </el-form-item>
         <!-- 图形码 -->
@@ -157,25 +156,6 @@ export default {
         }
       }
     };
-    // 定义邮箱效验规则
-    const checkEmail = (rules, value, callback) => {
-      // value是值
-      if (!value) {
-        callback(new Error("邮箱不能为空"));
-      } else {
-        // 格式验证
-        const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-        // 验证
-        if (reg.test(value)) {
-          // 对的
-          callback();
-        } else {
-          // 错误
-          callback(new Error("邮箱格式不对哦"));
-        }
-      }
-    };
-
     return {
       // 登录表单的数据
       loginForm: {
@@ -185,12 +165,6 @@ export default {
         password: "",
         // 验证码
         captcha: ""
-      },
-      // 注册表单数据
-      registerFrom: {
-        phone: "",
-        email: "",
-        password: ""
       },
       // 登录验证规则
       loginRules: {
@@ -202,18 +176,6 @@ export default {
         captcha: [
           { required: true, message: "验证码不能为空" },
           { min: 4, max: 4, message: "验证码只有4位哦，不要写错了噢" }
-        ]
-      },
-      // 注册验证规则
-      registerRules: {
-        phone: [
-          { message: "手机号不能为空", trigger: "blur" },
-          // 验证规则需要单独写 不能和为空在一起
-          { required: true, validator: checkPhone }
-        ],
-        email: [
-          { message: "邮箱不能为空", trigger: "blur" },
-          { required: true, validator: checkEmail }
         ]
       },
       // 验证码地址
