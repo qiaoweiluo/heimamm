@@ -12,7 +12,14 @@ import index from "../views/index/index.vue";
 
 // 嵌套路由的组件导入
 
+// 数据概览
+import elicon from '../views/index/elicon/elicon.vue';
 
+// 用户列表
+import userlist from '../views/index/userlist/userlist.vue';
+
+// 企业列表
+import edit from '../views/index/edit/edit.vue';
 
 // 企业列表
 import enterprise from '../views/index/enterprise/enterprise.vue';
@@ -36,15 +43,30 @@ const routes = [
     children: [
       
       {
-        // 匹配的是 /index/subject
-        path: "subject", 
-        component: subject
+        // 匹配的是 /index/elicon
+        path: "elicon", 
+        component: elicon
+      },
+      {
+        // 匹配的是 /index/userlist
+        path: "userlist", 
+        component: userlist
+      },
+      {
+        // 匹配的是 /index/edit
+        path: "edit", 
+        component: edit
       },
       {
         // 匹配的是 /index/enterprise
         path: "enterprise", 
         component: enterprise
-      }
+      },
+      {
+        // 匹配的是 /index/enterprise
+        path: "subject", 
+        component: subject
+      },
     ]
   }
 ];

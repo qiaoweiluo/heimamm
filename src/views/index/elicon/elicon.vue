@@ -1,12 +1,12 @@
 <template>
   <div>
-      <img src="../../../assets/enterprise.png" alt="">
+      <img src="../../../assets/captcha.png" alt="">
   </div>
 </template>
 
 <script>
 export default {
-    name:"enterprise"
+    name: "elicon"
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-      <!-- <img src="../../../assets/subject.png" alt=""> -->
+      <img src="../../../assets/subject.png" alt="">
   </div>
 </template>
 
