@@ -11,16 +11,16 @@
       <div class="right">
         <img class="avatar" src="../../assets/avatar.jpg" alt />
         <span class="name">西兰花,您好</span>
-        <el-button class="logout" size="mini" type="primary">退出</el-button>
+        <el-button class="logout" @click="logout" size="mini" type="primary">退出</el-button>
       </div>
     </el-header>
     <!-- 左侧导航栏 -->
     <el-container>
       <!-- 饿了么UI默认300px  -->
       <el-aside class="aside" style="width:auto">
-        <el-menu default-active="2"  class="el-menu-vertical-demo" router :collapse="isCollapse">
-            <!-- index表示匹配的地址 -->
-            <!-- /index/elicon 绝对路径   elicon相对路径-->
+        <el-menu default-active="2" class="el-menu-vertical-demo" router :collapse="isCollapse">
+          <!-- index表示匹配的地址 -->
+          <!-- /index/elicon 绝对路径   elicon相对路径-->
           <el-menu-item index="/index/dataRecord">
             <!-- 图标 -->
             <i class="el-icon-pie-chart"></i>
@@ -34,11 +34,11 @@
             <i class="el-icon-edit-outline"></i>
             <span slot="title">题库列表</span>
           </el-menu-item>
-          <el-menu-item index="/index/enterprise" >
+          <el-menu-item index="/index/enterprise">
             <i class="el-icon-office-building"></i>
             <span slot="title">企业列表</span>
           </el-menu-item>
-          <el-menu-item index="/index/subject" >
+          <el-menu-item index="/index/subject">
             <i class="el-icon-notebook-2"></i>
             <span slot="title">学科列表</span>
           </el-menu-item>
@@ -53,7 +53,7 @@
 
 <script>
 // 导入 获取token的函数
-import {getToken} from '../../utils/token.js'
+import { getToken, removeToken } from "../../utils/token.js";
 
 export default {
   name: "index",
@@ -66,13 +66,38 @@ export default {
   beforeCreate() {
     // 判断token是否存在
     const token = getToken();
-    if(!token) {
+    if (!token) {
       // 提示用户
-      this.$message.error("兄dei,你好像没登录,去登个录呗")
+      this.$message.error("兄dei,你好像没登录,去登个录呗");
       // 不存在 去登录页
-      this.$router.push("/login")
+      this.$router.push("/login");
     }
   },
+  methods: {
+    logout() {
+      this.$confirm("你即将退出这个网站,是否继续?", "提示", {
+        confirmButtonText: "狠心离开",
+        cancelButtonText: "陪伴",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+          });
+          // 删除token
+          removeToken();
+          // 去登录页
+          this.$router.push("/login");
+        })
+        .catch(() => {
+          // this.$message({type:"",message: ""}) 弹出框提示
+          this.$message({
+            type: "info",
+            message: "陪伴是最长情的告白"
+          });
+        });
+    }
+  }
 };
 </script>
 
