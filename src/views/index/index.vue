@@ -52,13 +52,27 @@
 </template>
 
 <script>
+// 导入 获取token的函数
+import {getToken} from '../../utils/token.js'
+
 export default {
   name: "index",
   data() {
     return {
       isCollapse: false
     };
-  }
+  },
+  // 生命周期钩子
+  beforeCreate() {
+    // 判断token是否存在
+    const token = getToken();
+    if(!token) {
+      // 提示用户
+      this.$message.error("兄dei,你好像没登录,去登个录呗")
+      // 不存在 去登录页
+      this.$router.push("/login")
+    }
+  },
 };
 </script>
 

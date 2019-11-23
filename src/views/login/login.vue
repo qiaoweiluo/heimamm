@@ -299,7 +299,7 @@ export default {
             if (res.data.code == 200) {
               this.$message.success("你可算回来啦！");
               // 跳转
-              // this.$router.push('/index');
+              this.$router.push('/index');
               // 保存凭证
               // window.localStorage.setItem('mmtoken',res.data.data.token);
               // 调用方法
