@@ -1,6 +1,6 @@
 <template>
   <div>
-      <img src="../../../assets/enterprise.png" alt="">
+      企业列表
   </div>
 </template>
 

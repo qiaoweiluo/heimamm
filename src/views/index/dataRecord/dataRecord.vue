@@ -1,12 +1,12 @@
 <template>
   <div>
-      <img src="../../../assets/captcha.png" alt="">
+    数据列表
   </div>
 </template>
 
 <script>
 export default {
-    name: "elicon"
+    name: "dataRecord"
 }
 </script>
 

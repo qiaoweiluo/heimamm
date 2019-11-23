@@ -1,12 +1,12 @@
 <template>
   <div>
-      <img src="../../../assets/logo.png" alt="">
+      用户列表
   </div>
 </template>
 
 <script>
 export default {
-    name: "userlist"
+    name: "userList"
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-      <img src="../../../assets/subject.png" alt="">
+      学科列表
   </div>
 </template>
 

@@ -19,16 +19,18 @@
       <!-- 饿了么UI默认300px  -->
       <el-aside class="aside" style="width:auto">
         <el-menu default-active="2"  class="el-menu-vertical-demo" router :collapse="isCollapse">
-          <el-menu-item index="/index/elicon">
+            <!-- index表示匹配的地址 -->
+            <!-- /index/elicon 绝对路径   elicon相对路径-->
+          <el-menu-item index="/index/dataRecord">
             <!-- 图标 -->
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据概览</span>
           </el-menu-item>
-          <el-menu-item index="/index/userlist">
+          <el-menu-item index="/index/userList">
             <i class="el-icon-user"></i>
             <span slot="title">用户列表</span>
           </el-menu-item>
-          <el-menu-item index="/index/edit">
+          <el-menu-item index="/index/questionList">
             <i class="el-icon-edit-outline"></i>
             <span slot="title">题库列表</span>
           </el-menu-item>

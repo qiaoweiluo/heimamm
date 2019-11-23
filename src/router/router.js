@@ -2,6 +2,14 @@
 import VueRouter from "vue-router";
 // 导入vue 用就要导入
 import Vue from "vue";
+
+// 重写push方法 屏蔽 重复跳转错误
+// 解决两次访问相同路由地址报错
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 // use
 Vue.use(VueRouter);
 
@@ -13,13 +21,13 @@ import index from "../views/index/index.vue";
 // 嵌套路由的组件导入
 
 // 数据概览
-import elicon from '../views/index/elicon/elicon.vue';
+import dataRecord from '../views/index/dataRecord/dataRecord.vue';
 
 // 用户列表
-import userlist from '../views/index/userlist/userlist.vue';
+import userList from '../views/index/userList/userList.vue';
 
-// 企业列表
-import edit from '../views/index/edit/edit.vue';
+// 题库列表
+import questionList from '../views/index/questionList/questionList.vue';
 
 // 企业列表
 import enterprise from '../views/index/enterprise/enterprise.vue';
@@ -43,19 +51,19 @@ const routes = [
     children: [
       
       {
-        // 匹配的是 /index/elicon
-        path: "elicon", 
-        component: elicon
+        // 匹配的是 /index/dataRecord
+        path: "dataRecord", 
+        component: dataRecord
       },
       {
         // 匹配的是 /index/userlist
-        path: "userlist", 
-        component: userlist
+        path: "userList", 
+        component: userList
       },
       {
         // 匹配的是 /index/edit
-        path: "edit", 
-        component: edit
+        path: "questionList", 
+        component: questionList
       },
       {
         // 匹配的是 /index/enterprise

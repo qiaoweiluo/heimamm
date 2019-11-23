@@ -1,6 +1,6 @@
 <template>
     <div>
-        <img src="../../../assets/avatar.jpg" alt="">
+        问题列表
     </div>
 </template>
 
