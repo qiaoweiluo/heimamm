@@ -57,6 +57,10 @@ axios.interceptors.response.use(
       router.push("/login");
       return;
     }
+    // 如果状态码为200 成功
+    if(response.data.code===200){
+      Message.success(response.data.message);
+    }
     return response;
   },
   function (error) {
