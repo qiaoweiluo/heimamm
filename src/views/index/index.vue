@@ -166,7 +166,7 @@ export default {
   //   // background: skyblue;
   // }
   .main {
-    background-color: skyblue;
+    background-color: hotpink;
   }
   // 折叠菜单相关的类名
   .el-menu-vertical-demo:not(.el-menu--collapse) {
