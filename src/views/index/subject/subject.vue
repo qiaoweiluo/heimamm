@@ -30,16 +30,25 @@
     <el-card class="main-card">
       <el-table :data="tableData" style="width: 100%" stripe border>
         <el-table-column type="index" label="序号"></el-table-column>
-        <el-table-column prop="date" label="学科标号"></el-table-column>
+        <el-table-column prop="id" label="学科标号"></el-table-column>
         <el-table-column prop="name" label="学科名称"></el-table-column>
-        <el-table-column prop="address" label="简称"></el-table-column>
-        <el-table-column prop="skill" label="创建者"></el-table-column>
-        <el-table-column prop="skill" label="创建日期"></el-table-column>
-        <el-table-column label="状态"></el-table-column>
+        <el-table-column prop="short_name" label="简称"></el-table-column>
+        <el-table-column prop="creater" label="创建者"></el-table-column>
+        <el-table-column prop="create_time" label="创建日期"></el-table-column>
+        <!-- 自定义列表 1 插槽-->
+        <el-table-column prop="status" label="状态">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status==0" class="red">禁用</span>
+            <span v-else>启用</span>
+          </template>
+        </el-table-column>
+        <!-- 自定义列表 2 插槽-->
         <el-table-column label="操作">
-          <!-- 插槽 -->
-          <template>
-            <el-button type="primary">编辑</el-button>
+          <!-- slot-scope="scope" -->
+          <template slot-scope="scope">
+            <el-button type="text" >编辑</el-button>
+            <el-button type="text">禁用</el-button>
+            <el-button type="text" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -51,20 +60,42 @@
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
         :total="36"
-      >
-      </el-pagination>
+      ></el-pagination>
     </el-card>
   </div>
 </template>
 
 <script>
+// 导入学科api
+import { subjectApi } from "../../../api/api.js";
 export default {
   name: "subject",
   data() {
     return {
       formInline: {},
-      tableData: []
+      tableData: [],
+      // 页码
+      page: 1,
+      // 页容量
+      limit: 10
     };
+  },
+  methods: {
+    // handleEdit(data, index) {
+    //   window.console.log(index, data);
+      
+    // },
+    handleDelete(index, row) {
+      window.console.log(index, row);
+      this.tableData.splice(index, 1);
+    }
+  },
+  // 生命钩子
+  created() {
+    subjectApi.list({}).then(res => {
+      // window.console.log(res);
+      this.tableData = res.data.data.items;
+    });
   }
 };
 </script>
@@ -89,5 +120,9 @@ export default {
   .main-card {
     margin-top: 20px;
   }
+}
+
+.red {
+  color: red;
 }
 </style>
