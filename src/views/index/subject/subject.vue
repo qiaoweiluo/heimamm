@@ -23,7 +23,7 @@
         <el-form-item>
           <el-button type="primary" @click="search">搜索</el-button>
           <el-button>清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增学科</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="showSubject = true">新增学科</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -31,12 +31,12 @@
     <el-card class="main-card">
       <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%" stripe border>
-        <el-table-column type="index" label="序号"> </el-table-column>
-        <el-table-column prop="rid" label="学科编号"> </el-table-column>
-        <el-table-column prop="name" label="学科名称"> </el-table-column>
-        <el-table-column prop="short_name" label="简称"> </el-table-column>
-        <el-table-column prop="creater" label="创建者"> </el-table-column>
-        <el-table-column prop="create_time" label="创建日期"> </el-table-column>
+        <el-table-column type="index" label="序号"></el-table-column>
+        <el-table-column prop="rid" label="学科编号"></el-table-column>
+        <el-table-column prop="name" label="学科名称"></el-table-column>
+        <el-table-column prop="short_name" label="简称"></el-table-column>
+        <el-table-column prop="creater" label="创建者"></el-table-column>
+        <el-table-column prop="create_time" label="创建日期"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 0" class="red">禁用</span>
@@ -62,9 +62,33 @@
         :total="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-      >
-      </el-pagination>
+      ></el-pagination>
     </el-card>
+
+    <!-- 学科编号对话框 -->
+    <el-dialog title="学科编号" :visible.sync="showSubject">
+      <el-form :rules="rules">
+        <el-form-item label="学科编号" prop="number" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="学科名称" prop="designation" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="学科简称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="学科简介" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="学科备注" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showSubject = false">取 消</el-button>
+        <el-button type="primary" @click="showSubject = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -84,11 +108,25 @@ export default {
       // 页容量
       limit: 10,
       // 页码数组
-      pageSizes:[5,10,15,20],
+      pageSizes: [5, 10, 15, 20],
       // 总条数
-      total:0
+      total: 0,
+      showSubject: false,
+      form: {
+        name: ""
+      },
+      formLabelWidth: "120px",
+      rules: {
+        number: [
+          { required: true, message: "请输入学科编号", trigger: "blur" }
+        ],
+        designation: [
+          { required: true, message: "请输入学科名称", trigger: "blur" }
+        ]
+      }
     };
   },
+  // 生命周期钩子 
   created() {
     // 调用接口
     subjectApi
@@ -106,18 +144,27 @@ export default {
   },
   // 方法
   methods: {
-    search() {
-      // 调用接口 传递筛选条件
+    // 获取数据的逻辑
+    getList(){
+        // 调用接口 传递筛选条件
+        // ES6的拓展运算符
       subjectApi
         .list({ page: this.page, limit: this.limit, ...this.formInline })
         .then(res => {
-          window.console.log(res);
           // 赋值给table
           this.tableData = res.data.data.items;
+          // 重新设置页容量即可
+          this.total = res.data.data.pagination.total;
         });
     },
+    search() {
+      // 跳转到第一页
+      this.page = 1;
+      // 获取数据
+      this.getList();
+    },
     // 页容量改变
-    handleSizeChange(size){
+    handleSizeChange(size) {
       // 保存起来
       this.limit = size;
       this.page = 1;
@@ -125,11 +172,11 @@ export default {
       this.search();
     },
     // 页容量改变
-    handleCurrentChange(current){
+    handleCurrentChange(current) {
       // 保存页码
-      this.page = current
+      this.page = current;
       // 重新获取数据
-      this.search()
+      this.getList();
     }
   }
 };
@@ -158,6 +205,37 @@ export default {
   // span 变红
   .red {
     color: red;
+  }
+
+  // 对话框样式
+  .el-dialog {
+    width: 600px;
+
+    .el-dialog__header {
+      text-align: center;
+      background: linear-gradient(to right, #01c5fa, #1394fa);
+
+      .el-dialog__title {
+        color: white;
+      }
+    }
+
+    .el-dialog__body {
+      .el-form-item__label {
+        width: 61px;
+        height: 16px;
+        font-size: 15px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: rgba(76, 78, 84, 1);
+      }
+      .el-input__inner {
+        width: 100%;
+      }
+    }
+    .dialog-footer {
+      text-align: center;
+    }
   }
 }
 </style>
