@@ -105,7 +105,7 @@ export function userInfo() {
 }
 
 // 暴露学科相关的api
-export const subjectApi = {
+export const subject = {
   // 新增学科
   add(data) {
     return axios({

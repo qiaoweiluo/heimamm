@@ -45,10 +45,11 @@
         </el-table-column>
         <el-table-column label="操作">
           <!-- 插槽 -->
-          <template>
+          <template slot-scope="scope">
             <el-button type="text">编辑</el-button>
             <el-button type="text">禁用</el-button>
-            <el-button type="text">删除</el-button>
+            <!-- 删服务器数据 不用加index -->
+            <el-button type="text" @click="remove(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -65,9 +66,9 @@
       ></el-pagination>
     </el-card>
 
-    <!-- 学科编号对话框 -->
-    <el-dialog title="学科编号" :visible.sync="showSubject">
-      <el-form :rules="rules">
+    <!-- 学科编号  对话框 -->
+    <el-dialog title="新增学科" :visible.sync="showSubject">
+      <el-form :addRules="addRules" ref="ruleForm">
         <el-form-item label="学科编号" prop="number" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
@@ -94,7 +95,8 @@
 
 <script>
 // 导入 接口
-import { subjectApi } from "../../../api/api.js";
+import { subject } from "../../../api/api.js";
+
 export default {
   name: "subject",
   data() {
@@ -111,12 +113,16 @@ export default {
       pageSizes: [5, 10, 15, 20],
       // 总条数
       total: 0,
+      // 新增表单时候显示
       showSubject: false,
+      // 新增表单数据
       form: {
         name: ""
       },
+      // label的宽度不设置会自动设置
       formLabelWidth: "120px",
-      rules: {
+      // 表单验证规则
+      addRules: {
         number: [
           { required: true, message: "请输入学科编号", trigger: "blur" }
         ],
@@ -126,10 +132,10 @@ export default {
       }
     };
   },
-  // 生命周期钩子 
+  // 生命周期钩子
   created() {
     // 调用接口
-    subjectApi
+    subject
       .list({
         page: this.page,
         limit: this.limit
@@ -145,10 +151,10 @@ export default {
   // 方法
   methods: {
     // 获取数据的逻辑
-    getList(){
-        // 调用接口 传递筛选条件
-        // ES6的拓展运算符
-      subjectApi
+    getList() {
+      // 调用接口 传递筛选条件
+      // ES6的拓展运算符
+      subject
         .list({ page: this.page, limit: this.limit, ...this.formInline })
         .then(res => {
           // 赋值给table
@@ -177,6 +183,40 @@ export default {
       this.page = current;
       // 重新获取数据
       this.getList();
+    },
+    // 编辑文章
+
+    // 删除列表
+    remove(data) {
+      // window.console.log(data);
+      // 提示 Messagebox 弹框
+      this.$confirm("此操作将永久删除该学科, 确定?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          // 接口调用
+          subject
+            .remove({
+              id: data.id
+            })
+            .then(res => {
+              // window.console.log(res);
+              if (res.data.code == 200) {
+                // 提示
+                // this.$message.success(res.data.message)
+                // 重新获取数据
+                this.getList();
+              }
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   }
 };
