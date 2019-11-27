@@ -201,3 +201,47 @@ export const enterprise = {
     });
   },
 }
+
+// 暴露用户相关的api
+export const user = {
+  // 新增用户
+  add(data) {
+    return axios({
+      url: 'user/add',
+      method: 'post',
+      data
+    });
+  },
+  // 用户编辑
+  edit(data) {
+    return axios({
+      url: 'user/edit',
+      method: 'post',
+      data
+    });
+  },
+  // 用户列表
+  list(params) {
+    return axios({
+      url: 'user/list',
+      method: 'get',
+      params
+    });
+  },
+  // 状态修改 
+  status(data) {
+    return axios({
+      url: 'user/status',
+      method: 'post',
+      data
+    });
+  },
+  // 用户删除 
+  remove(data) {
+    return axios({
+      url: 'user/remove',
+      method: 'post',
+      data
+    });
+  },
+}
