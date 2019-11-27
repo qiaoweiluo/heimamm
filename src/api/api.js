@@ -45,6 +45,11 @@ axios.interceptors.request.use(
 // 响应拦截器
 // axios 直接使用的.then之前
 // response 服务器响应的内容
+// 这里错误状态码 只有0
+// 正确状态码只有200
+// 可以通过不同的状态码更加细致的返回不同的弹窗
+// 后端决定状态码的规范
+// 可以结合请求的url进行更精准的判断
 axios.interceptors.response.use(
   function (response) {
     // 判断token
@@ -152,3 +157,47 @@ export const subject = {
   }
 
 };
+
+// 暴露企业相关的api (方法名注意不要和关键字重复)
+export const enterprise = {
+  // 新增企业
+  add(data) {
+    return axios({
+      url: 'enterprise/add',
+      method: 'post',
+      data
+    });
+  },
+  // 企业编辑
+  edit(data) {
+    return axios({
+      url: 'enterprise/edit',
+      method: 'post',
+      data
+    });
+  },
+  // 企业列表
+  list(params) {
+    return axios({
+      url: 'enterprise/list',
+      method: 'get',
+      params
+    });
+  },
+  // 状态修改 
+  status(data) {
+    return axios({
+      url: 'enterprise/status',
+      method: 'post',
+      data
+    });
+  },
+  // 企业删除 
+  remove(data) {
+    return axios({
+      url: 'enterprise/remove',
+      method: 'post',
+      data
+    });
+  },
+}
