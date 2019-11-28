@@ -21,24 +21,24 @@
         <el-menu default-active="2" class="el-menu-vertical-demo" router :collapse="isCollapse">
           <!-- index表示匹配的地址 -->
           <!-- /index/elicon 绝对路径   elicon相对路径-->
-          <el-menu-item index="/index/dataRecord">
+          <el-menu-item index="/index/dataRecord" v-if="['管理员','老师'].indexOf(getRole)!=-1">
             <!-- 图标 -->
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据概览</span>
           </el-menu-item>
-          <el-menu-item index="/index/userList">
+          <el-menu-item index="/index/userList" v-if="['管理员'].indexOf(getRole)!=-1">
             <i class="el-icon-user"></i>
             <span slot="title">用户列表</span>
           </el-menu-item>
-          <el-menu-item index="/index/questionList">
+          <el-menu-item index="/index/questionList" v-if="['管理员','老师'].indexOf(getRole)!=-1">
             <i class="el-icon-edit-outline"></i>
             <span slot="title">题库列表</span>
           </el-menu-item>
-          <el-menu-item index="/index/enterprise">
+          <el-menu-item index="/index/enterprise" v-if="['管理员','老师'].indexOf(getRole)!=-1">
             <i class="el-icon-office-building"></i>
             <span slot="title">企业列表</span>
           </el-menu-item>
-          <el-menu-item index="/index/subject">
+          <el-menu-item index="/index/subject" v-if="['管理员','老师','学生'].indexOf(getRole)!=-1">
             <i class="el-icon-notebook-2"></i>
             <span slot="title">学科列表</span>
           </el-menu-item>
@@ -139,6 +139,7 @@ export default {
         process.env.VUE_APP_BASEURL + "/" + this.$store.state.userInfo.avatar
       );
     },
+    // 根据角色判断左侧导航栏的显示隐藏 
     // 用户角色
     getRole() {
       return this.$store.state.userInfo.role;
