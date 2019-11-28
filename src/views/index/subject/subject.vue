@@ -36,7 +36,12 @@
         <el-table-column prop="name" label="学科名称"></el-table-column>
         <el-table-column prop="short_name" label="简称"></el-table-column>
         <el-table-column prop="creater" label="创建者"></el-table-column>
-        <el-table-column prop="create_time" label="创建日期"></el-table-column>
+        <el-table-column prop="create_time" label="创建日期">
+          <template slot-scope="scope">
+            <!-- 管道服务 -->
+            {{ scope.row.create_time | formatTime_global }}
+          </template>
+        </el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 0" class="red">禁用</span>
@@ -121,6 +126,8 @@
 <script>
 // 导入 接口
 import { subject } from "../../../api/api.js";
+// 导入moment插件
+// import moment from 'moment'
 export default {
   name: "subject",
   data() {
@@ -312,7 +319,15 @@ export default {
         }
       });
     }
-  }
+  }, 
+  // 过滤器
+  // filters:{
+  //   formatTime(value){
+  //     // window.console.log(value)
+  //     // moment(处理的值).format(格式)
+  //     return moment(value).format("YYYY-MM-DD")
+  //   }
+  // }
 };
 </script>
 

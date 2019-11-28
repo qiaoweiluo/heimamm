@@ -20,6 +20,10 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+// 导入全局过滤器 必须在new Vue之前
+// 只是为了执行 导入即可
+import './filters/filters.js'
+
 new Vue({
   render: h => h(App),
   // 挂载到Vue实例 - 路由

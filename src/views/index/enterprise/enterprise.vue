@@ -37,7 +37,12 @@
         <el-table-column prop="name" label="企业名称" width="180"></el-table-column>
         <el-table-column prop="tag" label="所属领域"></el-table-column>
         <el-table-column prop="creater" label="创建者"></el-table-column>
-        <el-table-column prop="create_time" label="创建日期" width="180px"></el-table-column>
+        <el-table-column prop="create_time" label="创建日期" width="180px">
+          <template slot-scope="scope">
+            <!-- 管道服务 -->
+            {{ scope.row.create_time | formatTime_global }}
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="状态">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 0" class="red">禁用</span>
