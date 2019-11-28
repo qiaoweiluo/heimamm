@@ -58,7 +58,7 @@
 import { removeToken } from '../../utils/token.js';
 
 // 导入 用户信息方法
-import {userInfo} from '../../api/api.js';
+// import {userInfo} from '../../api/api.js';
 
 export default {
   name: "index",
@@ -72,7 +72,7 @@ export default {
       name: ""
     };
   },
-  // 生命周期钩子
+  // 生命周期钩子 token的判断放到路由的导航守卫中去了
   beforeCreate() {
     // // 判断token是否存在
     // const token = getToken();
@@ -85,22 +85,22 @@ export default {
   },
   // 创建钩子
   created() {
-    userInfo().then(res=>{
-      // 判断token 伪造token进来
-      // if(res.data.code===0){
-      //   // token有问题 
-      //   this.$message.error("小老弟，伪造token，牛逼啊！");
-      //   // 删除token
-      //   removeToken();
-      //   // 去登录页
-      //   this.$router.push("/login")
-      //   return 
-      // }
-      // window.console.log(res);
-      // 保存到data中
-      this.avatar = `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`
-      this.name=res.data.data.name
-    })
+    // userInfo().then(res=>{
+    //   // 判断token 伪造token进来
+    //   // if(res.data.code===0){
+    //   //   // token有问题 
+    //   //   this.$message.error("小老弟，伪造token，牛逼啊！");
+    //   //   // 删除token
+    //   //   removeToken();
+    //   //   // 去登录页
+    //   //   this.$router.push("/login")
+    //   //   return 
+    //   // }
+    //   // window.console.log(res);
+    //   // 保存到data中
+    //   this.avatar = `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`
+    //   this.name=res.data.data.name
+    // })
   },
   methods: {
     logout() {

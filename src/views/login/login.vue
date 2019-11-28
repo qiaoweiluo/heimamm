@@ -277,20 +277,6 @@ export default {
       // 饿了么的表单.validate()
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // valid 不为空说明 成功
-          // alert("submit!");
-          // 接口调用
-          // axios({
-          //   url: "http://183.237.67.218:3002/login",
-          //   method: "post",
-          //   data: {
-          //     phone: this.loginForm.phone,
-          //     password: this.loginForm.password,
-          //     code: this.loginForm.captcha
-          //   },
-          //   withCredentials: true
-          // })
-          
           login({
             phone: this.loginForm.phone,
             password: this.loginForm.password,
@@ -300,16 +286,23 @@ export default {
             // window.console.log(res)
             if (res.data.code == 200) {
               this.$message.success("你可算回来啦！");
+              // 跳转
+              // this.$router.push('/index');
+              // 这是之前埋下坑 先跳后存 所以第一次总是进不去
+              // 因为进去了也会因为没存token被打出来
+
               // 保存凭证
               // window.localStorage.setItem('mmtoken',res.data.data.token);
               // 调用方法
               setToken(res.data.data.token)
-              // 跳转
-              this.$router.push('/index');
               
-              window.console.log(res);
-              // 保存用户信息到 仓库中
+              // window.console.log(res);
+              // 正常用户的逻辑
+              // 保存用户信息到 仓库中 commit方法可以让数据更新可以追踪
               this.$store.commit("CHANGEINFO",res.data.data);
+              // 应该先存后跳转
+              this.$router.push('/index');
+
             } else {
               this.$message.warning("登录失败了哦");
             }

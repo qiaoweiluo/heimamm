@@ -9,6 +9,12 @@ import { Message } from "element-ui";
 // 导入 获取token的方法
 import { getToken } from '../utils/token';
 
+// 导入 获取用户信息的逻辑
+import { userInfo } from "../api/api.js";
+
+// 导入 仓库
+import store from "../store/store.js";
+
 // 重写push方法 屏蔽 重复跳转错误
 // 解决两次访问相同路由地址报错
 const originalPush = VueRouter.prototype.push
@@ -91,21 +97,43 @@ const router = new VueRouter({
   routes
 });
 
-// 定义白名单 后续直接使用性能好一些
+// 定义白名单(不登陆也可以访问) 后续直接使用性能好一些
 const whitePaths = ["/login"];
 // 导航守卫
 router.beforeEach((to, from, next) => {
+   // 判断是否存在 白名单中 to.path 路径比如 /index /login
   if(whitePaths.indexOf(to.path) != -1) {
   //  放走
-  return next()
+  return next();
   }
   // 登录状态 token
-  if(getToken) {
-    // token 存在 放走
-    return next();
+  if(getToken()) {
+    // 存在
+    // 调用接口验证对错 异步操作
+    // 这里放置return是为了阻断异步操作代码的执行 不是为了拿返回值
+    return  userInfo().then(res => {
+      // 注意 发请求是异步的  需要把next()放里面
+      // 才不会出现伪造token的情况下 依旧会进到index页面停留一会才退出去
+      // 用户信息获取成功 token木有问题
+      // 高级用户强打token 
+      store.commit("CHANGEINFO", res.data.data);
+      /*
+        两次获取数据的目的: 
+          1. 判断token
+          2. 解决 登录后再开一个页面 只有token 没有用户的登录信息
+      */
+      // 解决伪造token进页面的问题
+      // return next();
+      next();
+    })
+    // 放走
+    // 放外面是不会等请求回来再执行的
+    // return next();
   }
 
-  // 说明不是白名单
+  // 说明不是白名单 // 没登录，同时木有token
+  // 因为上面代码最后的 阻断 return 放里面去了 
+  // 代码继续往后走 所以强打进入页面 也会弹出  请先登录
   Message("请先登录");
   next("/login")
 })
