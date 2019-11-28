@@ -49,7 +49,7 @@ import subject from '../views/index/subject/subject.vue';
 
 
 
-// 规则
+// 路由规则
 const routes = [
   // 登录组件规则
   {
@@ -60,33 +60,50 @@ const routes = [
   {
     path: "/index",
     component: index,
+    meta: {
+      roles:['管理员','老师','学生']
+    },
     // 嵌套路由 
     children: [
-      
       {
         // 匹配的是 /index/dataRecord
         path: "dataRecord", 
-        component: dataRecord
+        component: dataRecord,
+        meta:{
+          roles:['管理员','老师']
+        }
       },
       {
         // 匹配的是 /index/userlist
         path: "userList", 
-        component: userList
+        component: userList,
+        meta:{
+          roles:['管理员']
+        }
       },
       {
-        // 匹配的是 /index/edit
+        // 匹配的是 /index/questionList
         path: "questionList", 
-        component: questionList
+        component: questionList,
+        meta:{
+          roles:['管理员','老师']
+        }
       },
       {
         // 匹配的是 /index/enterprise
         path: "enterprise", 
-        component: enterprise
+        component: enterprise,
+        meta:{
+          roles:['管理员','老师']
+        }
       },
       {
-        // 匹配的是 /index/enterprise
+        // 匹配的是 /index/subject
         path: "subject", 
-        component: subject
+        component: subject,
+        meta:{
+          roles:['管理员','老师','学生']
+        }
       },
     ]
   }
@@ -128,9 +145,15 @@ router.beforeEach((to, from, next) => {
       return next("/login");
     }
 
+    // 用户启用状态 权限判断 includes可以代替indexOf
+    if(to.meta.roles.indexOf(res.data.data.role)==-1){
+      // 不存在 说明 没有权限
+      Message.warning("兄die，你不允许访问这个页面");
+      return 
+    }
 
       // 解决伪造token进页面的问题
-      // return next();
+      // return next(); return上移
       next();
     })
     // 放走
