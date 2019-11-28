@@ -67,7 +67,7 @@
         <el-form-item label="头像" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
-            action="http://183.237.67.218:3002/uploads"
+            action="action"
             name="image"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
@@ -221,7 +221,7 @@ export default {
         ]
       },
       // 验证码地址
-      captchaSrc: "http://183.237.67.218:3002/captcha?type=login",
+      captchaSrc: `${process.env.VUE_APP_BASEURL}/captcha?type=login`,
       // 是否勾选
       checked: true,
       // 是否显示注册框
@@ -256,11 +256,13 @@ export default {
       // 图片地址
       imageUrl: "",
       // 注册图形验证码 地址
-      regCaptcha: "http://183.237.67.218:3002/captcha?type=sendsms",
+      regCaptcha: `${process.env.VUE_APP_BASEURL}/captcha?type=sendsms`,
       // 短信验证码按钮文本
       btnTxt: "获取短信验证码",
       // 按钮是否禁用
-      isDisabled: false
+      isDisabled: false,
+      // 文件上传的地址
+      action:process.env.VUE_APP_BASEURL+'/uploads'
     };
   },
   methods: {
@@ -322,7 +324,7 @@ export default {
       // 很有可能重复  随机数
       // this.captchaSrc = `http://183.237.67.218:3002/captcha?type=login&${Math.random()}`;
       // 绝对不会重复 时间戳 获取1970年到现在的时间毫秒数
-      this.captchaSrc = `http://183.237.67.218:3002/captcha?type=login&${Date.now()}`;
+      this.captchaSrc = `${process.env.VUE_APP_BASEURL}/captcha?type=login&${Date.now()}`;
       // this.captchaSrc = `http://183.237.67.218:3002/captcha?type=login`
     },
     // 图片上传的方法
@@ -350,7 +352,7 @@ export default {
     // 重新获取注册 图形验证码
     changeRegCaptcha() {
       // 修改地址
-      this.regCaptcha = `http://183.237.67.218:3002/captcha?type=sendsms&${Date.now()}`;
+      this.regCaptcha = `${process.env.VUE_APP_BASEURL}/captcha?type=sendsms&${Date.now()}`;
     },
     // 获取短信验证码
     getMessage() {

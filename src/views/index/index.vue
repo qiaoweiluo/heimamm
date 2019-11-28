@@ -98,7 +98,7 @@ export default {
       // }
       // window.console.log(res);
       // 保存到data中
-      this.avatar = `http://183.237.67.218:3002/${res.data.data.avatar}`
+      this.avatar = `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`
       this.name=res.data.data.name
     })
   },

@@ -22,7 +22,9 @@ import {
 import router from "../router/router.js";
 
 // 统一设置 基地址
-axios.defaults.baseURL = 'http://183.237.67.218:3002'
+// axios.defaults.baseURL = "http://183.237.67.218:3002";
+// axios.defaults.baseURL = "http://127.0.0.1/heimamm/public";
+axios.defaults.baseURL = process.env.VUE_APP_BASEURL;
 // 统一设置 跨域携带cookie
 axios.defaults.withCredentials = true;
 
@@ -63,7 +65,7 @@ axios.interceptors.response.use(
       return;
     }
     // 如果状态码为200 成功
-    if(response.data.code===200){
+    if (response.data.code === 200) {
       Message.success(response.data.message);
     }
     return response;
