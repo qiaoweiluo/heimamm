@@ -103,6 +103,7 @@ export default {
     // })
   },
   methods: {
+    // 登出
     logout() {
       this.$confirm("你即将退出这个网站,是否继续?", "提示", {
         confirmButtonText: "狠心离开",
@@ -112,6 +113,8 @@ export default {
         .then(() => {
           // 删除token
           removeToken();
+          // 删除仓库的数据即可
+            this.$store.commit("CHANGEINFO",undefined);
           // 去登录页
           this.$router.push("/login");
         })
@@ -125,6 +128,7 @@ export default {
     }
     // 计算属性 获取用户信息
   },
+  // 计算属性 仓库 获取用户信息
   computed: {
     // 获取名字
     getName() {
