@@ -3,6 +3,9 @@ import VueRouter from "vue-router";
 // 导入vue 用就要导入
 import Vue from "vue";
 
+// 导入element ui 弹框
+import { Message } from "element-ui";
+
 // 重写push方法 屏蔽 重复跳转错误
 // 解决两次访问相同路由地址报错
 const originalPush = VueRouter.prototype.push
@@ -34,6 +37,7 @@ import enterprise from '../views/index/enterprise/enterprise.vue';
 
 // 学科列表
 import subject from '../views/index/subject/subject.vue';
+
 
 
 // 规则
@@ -83,6 +87,19 @@ const routes = [
 const router = new VueRouter({
   routes
 });
+
+// 定义白名单 后续直接使用性能好一些
+const whitePaths = ["/login"];
+// 导航守卫
+router.beforeEach((to, from, next) => {
+  if(whitePaths.indexOf(to.path) == -1) {
+    Message.warning("请先登录!");
+    // 去登录页
+    return next("/login");
+  }
+  // 到这里说明可以访问
+  next();
+})
 
 // 挂载到Vue实例上
 // 暴露出去
