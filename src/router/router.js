@@ -122,6 +122,13 @@ router.beforeEach((to, from, next) => {
           1. 判断token
           2. 解决 登录后再开一个页面 只有token 没有用户的登录信息
       */
+     if(res.data.data.status===0){
+      // 禁用
+      Message.warning("请等待管理员启用你！！");
+      return next("/login");
+    }
+
+
       // 解决伪造token进页面的问题
       // return next();
       next();
