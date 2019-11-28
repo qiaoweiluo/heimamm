@@ -126,8 +126,6 @@
 <script>
 // 导入 接口
 import { subject } from "../../../api/api.js";
-// 导入moment插件
-// import moment from 'moment'
 export default {
   name: "subject",
   data() {
@@ -320,14 +318,6 @@ export default {
       });
     }
   }, 
-  // 过滤器
-  // filters:{
-  //   formatTime(value){
-  //     // window.console.log(value)
-  //     // moment(处理的值).format(格式)
-  //     return moment(value).format("YYYY-MM-DD")
-  //   }
-  // }
 };
 </script>
 
