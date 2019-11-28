@@ -304,7 +304,9 @@ export default {
               // window.localStorage.setItem('mmtoken',res.data.data.token);
               // 调用方法
               setToken(res.data.data.token)
-              // window.console.log(res);
+              window.console.log(res);
+              // 保存用户信息到 仓库中
+              this.$store.commit("CHANGEINFO",res.data.data);
             } else {
               this.$message.warning("登录失败了哦");
             }

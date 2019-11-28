@@ -22,8 +22,9 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
-  // 挂载到Vue实例
+  // 挂载到Vue实例 - 路由
   router,
+  // 挂载到vue实例 - 仓库
   store
 }).$mount('#app')
 

@@ -6,7 +6,19 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 // 创建仓库
 const store = new Vuex.Store({
-    state:{}
+    // 数据
+    state:{
+        // 用户信息 
+        userInfo:undefined
+    },
+    // 修改数据的方法 建议全部大写
+    mutations: {
+        // 全部大写
+        CHANGEINFO(state, info) {
+            // 直接保存
+            state.userInfo = info;
+        }
+    }
 })
 // 暴露出去
 export default store;
