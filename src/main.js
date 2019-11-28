@@ -24,6 +24,10 @@ Vue.config.productionTip = false
 // 只是为了执行 导入即可
 import './filters/filters.js'
 
+// 导入自定义指令 必须在 new Vue实例之前
+// 只是为了执行而已
+import './directive/directive.js'
+
 new Vue({
   render: h => h(App),
   // 挂载到Vue实例 - 路由

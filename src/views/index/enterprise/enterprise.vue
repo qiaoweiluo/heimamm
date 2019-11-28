@@ -59,7 +59,7 @@
               type="text"
               @click="status(scope.row)"
             >{{ scope.row.status === 1 ? "禁用" : "启用" }}</el-button>
-            <el-button size="mini" type="text" @click="remove(scope.row)">删除</el-button>
+            <el-button v-power="['管理员']" size="mini" type="text" @click="remove(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
