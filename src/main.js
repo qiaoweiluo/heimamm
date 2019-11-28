@@ -4,6 +4,9 @@ import App from './App.vue'
 // 导入抽取的路由
 import router from './router/router.js'
 
+// 导入仓库
+import store from './store/store.js';
+
 // 导入Element -ui
 import ElementUI from 'element-ui';
 // 导入Element-ui的样式
@@ -20,6 +23,7 @@ Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
   // 挂载到Vue实例
-  router
+  router,
+  store
 }).$mount('#app')
 
