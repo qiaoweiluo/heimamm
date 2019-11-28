@@ -6,6 +6,9 @@ import Vue from "vue";
 // 导入element ui 弹框
 import { Message } from "element-ui";
 
+// 导入 获取token的方法
+import { getToken } from '../utils/token';
+
 // 重写push方法 屏蔽 重复跳转错误
 // 解决两次访问相同路由地址报错
 const originalPush = VueRouter.prototype.push
@@ -92,13 +95,19 @@ const router = new VueRouter({
 const whitePaths = ["/login"];
 // 导航守卫
 router.beforeEach((to, from, next) => {
-  if(whitePaths.indexOf(to.path) == -1) {
-    Message.warning("请先登录!");
-    // 去登录页
-    return next("/login");
+  if(whitePaths.indexOf(to.path) != -1) {
+  //  放走
+  return next()
   }
-  // 到这里说明可以访问
-  next();
+  // 登录状态 token
+  if(getToken) {
+    // token 存在 放走
+    return next();
+  }
+
+  // 说明不是白名单
+  Message("请先登录");
+  next("/login")
 })
 
 // 挂载到Vue实例上

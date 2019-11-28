@@ -298,12 +298,13 @@ export default {
             // window.console.log(res)
             if (res.data.code == 200) {
               this.$message.success("你可算回来啦！");
-              // 跳转
-              this.$router.push('/index');
               // 保存凭证
               // window.localStorage.setItem('mmtoken',res.data.data.token);
               // 调用方法
               setToken(res.data.data.token)
+              // 跳转
+              this.$router.push('/index');
+              
               window.console.log(res);
               // 保存用户信息到 仓库中
               this.$store.commit("CHANGEINFO",res.data.data);

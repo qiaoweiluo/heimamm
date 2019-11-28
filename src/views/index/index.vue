@@ -52,8 +52,10 @@
 </template>
 
 <script>
-// 导入 获取token的函数
-import { getToken, removeToken } from "../../utils/token.js";
+// // 导入 获取token的函数
+// import { getToken, removeToken } from "../../utils/token.js";
+// 移除 获取token的方法
+import { removeToken } from '../../utils/token.js';
 
 // 导入 用户信息方法
 import {userInfo} from '../../api/api.js';
@@ -62,6 +64,7 @@ export default {
   name: "index",
   data() {
     return {
+      // 是否折叠
       isCollapse: false,
       // 头像地址
       avatar: "",
@@ -71,14 +74,14 @@ export default {
   },
   // 生命周期钩子
   beforeCreate() {
-    // 判断token是否存在
-    const token = getToken();
-    if (!token) {
-      // 提示用户
-      this.$message.error("兄dei,你好像没登录,去登个录呗");
-      // 不存在 去登录页
-      this.$router.push("/login");
-    }
+    // // 判断token是否存在
+    // const token = getToken();
+    // if (!token) {
+    //   // 提示用户
+    //   this.$message.error("兄dei,你好像没登录,去登个录呗");
+    //   // 不存在 去登录页
+    //   this.$router.push("/login");
+    // }
   },
   // 创建钩子
   created() {
