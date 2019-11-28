@@ -9,8 +9,8 @@
         <span class="title">黑马面面</span>
       </div>
       <div class="right">
-        <img class="avatar" :src="avatar" alt />
-        <span class="name">{{ name }},您好</span>
+        <img class="avatar" :src="getIcon" alt />
+        <span class="name">{{ getName }},您好</span>
         <el-button class="logout" @click="logout" size="mini" type="primary">退出</el-button>
       </div>
     </el-header>
@@ -55,7 +55,7 @@
 // // 导入 获取token的函数
 // import { getToken, removeToken } from "../../utils/token.js";
 // 移除 获取token的方法
-import { removeToken } from '../../utils/token.js';
+import { removeToken } from "../../utils/token.js";
 
 // 导入 用户信息方法
 // import {userInfo} from '../../api/api.js';
@@ -65,11 +65,11 @@ export default {
   data() {
     return {
       // 是否折叠
-      isCollapse: false,
+      isCollapse: false
       // 头像地址
-      avatar: "",
+      // avatar: "",
       // 用户名
-      name: ""
+      // name: ""
     };
   },
   // 生命周期钩子 token的判断放到路由的导航守卫中去了
@@ -88,13 +88,13 @@ export default {
     // userInfo().then(res=>{
     //   // 判断token 伪造token进来
     //   // if(res.data.code===0){
-    //   //   // token有问题 
+    //   //   // token有问题
     //   //   this.$message.error("小老弟，伪造token，牛逼啊！");
     //   //   // 删除token
     //   //   removeToken();
     //   //   // 去登录页
     //   //   this.$router.push("/login")
-    //   //   return 
+    //   //   return
     //   // }
     //   // window.console.log(res);
     //   // 保存到data中
@@ -122,6 +122,23 @@ export default {
             message: "陪伴是最长情的告白"
           });
         });
+    }
+    // 计算属性 获取用户信息
+  },
+  computed: {
+    // 获取名字
+    getName() {
+      return this.$store.state.userInfo.name;
+    },
+    // 获取头像
+    getIcon() {
+      return (
+        process.env.VUE_APP_BASEURL + "/" + this.$store.state.userInfo.avatar
+      );
+    },
+    // 用户角色
+    getRole() {
+      return this.$store.state.userInfo.role;
     }
   }
 };
@@ -169,7 +186,7 @@ export default {
   //   // background: skyblue;
   // }
   .main {
-    background-color: #E8E9EC;
+    background-color: #e8e9ec;
   }
   // 折叠菜单相关的类名
   .el-menu-vertical-demo:not(.el-menu--collapse) {
