@@ -247,3 +247,55 @@ export const user = {
     });
   },
 }
+
+// 暴露题库接口相关的api
+export const questionList = {
+  // 题目列表
+  list(params) {
+    return axios({
+      url: 'questions/list',
+      method: 'get',
+      params
+    });
+  },
+  // 获取题目信息
+  one(data) {
+    return axios({
+      url: 'question/one',
+      method: 'post',
+      data
+    });
+  },
+  // 编辑题目信息
+  edit(data) {
+    return axios({
+      url: 'questions/edit',
+      method: 'post',
+      data
+    });
+  },
+  // 设置题目状态
+  status(data) {
+    return axios({
+      url: 'question/status',
+      method: 'post',
+      data
+    });
+  },
+  // 发布题目
+  add(data) {
+    return axios({
+      url: 'questions/add',
+      method: 'post',
+      data
+    });
+  },
+  // 删除题目
+  remove(data) {
+    return axios({
+      url: 'questions/remove',
+      method: 'post',
+      data
+    });
+  },
+}

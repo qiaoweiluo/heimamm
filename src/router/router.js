@@ -140,7 +140,7 @@ router.beforeEach((to, from, next) => {
           2. 解决 登录后再开一个页面 只有token 没有用户的登录信息
       */
      if(res.data.data.status===0){
-      // 禁用
+      // 根据0和1 对角色信息的启用禁用判断 
       Message.warning("请等待管理员启用你！！");
       return next("/login");
     }
@@ -161,7 +161,7 @@ router.beforeEach((to, from, next) => {
     // return next();
   }
 
-  // 说明不是白名单 // 没登录，同时木有token
+  // 说明不是白名单  没登录，同时木有token
   // 因为上面代码最后的 阻断 return 放里面去了 
   // 代码继续往后走 所以强打进入页面 也会弹出  请先登录
   Message("请先登录");

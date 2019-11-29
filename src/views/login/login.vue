@@ -51,7 +51,7 @@
         </el-checkbox>
 
         <!-- 登录 注册按钮 -->
-        <el-button class="login-btn" @click="submitForm('loginForm')" type="primary">登录</el-button>
+        <el-button class="login-btn" @keyup.enter.native="submitForm('loginForm')" @click="submitForm('loginForm')" type="primary">登录</el-button>
         <el-button class="reg-btn" @click="showReg = true" type="primary">注册</el-button>
       </el-form>
     </div>
