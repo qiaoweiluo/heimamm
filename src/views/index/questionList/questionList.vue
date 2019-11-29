@@ -31,7 +31,6 @@
             <el-option label="简答" value="简答"></el-option>
           </el-select>
         </el-form-item>
-        <!-- 第二行开始 -->
         <el-form-item label="难度">
           <el-select v-model="formInline.difficulty" placeholder="请选择难度">
             <el-option label="简单" value="简单"></el-option>
@@ -44,8 +43,8 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="formInline.status" placeholder="请选择状态">
-            <el-option label="启用" value="启用"></el-option>
-            <el-option label="禁用" value="禁用"></el-option>
+            <el-option label="启用" :value="1"></el-option>
+            <el-option label="禁用" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="日期">
@@ -54,14 +53,13 @@
             <el-option label="禁用" value="禁用"></el-option>
           </el-select>
         </el-form-item>
-        <!-- 第三行开始 -->
         <el-form-item label="标题" class="title">
           <el-input v-model="formInline.title"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search">搜索</el-button>
           <el-button @click="clear">清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增学科</el-button>
+          <el-button type="primary" @click="addFormVisible = true" icon="el-icon-plus">新增学科</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -72,9 +70,9 @@
         <el-table-column type="index" label="序号"></el-table-column>
         <!-- 默认数据的展示效果 不能满足自己的需求时 -->
         <el-table-column prop="title" label="题目">
-            <template slot-scope="scope">
-                <span v-html="scope.row.title"></span>
-            </template>
+          <template slot-scope="scope">
+            <span v-html="scope.row.title"></span>
+          </template>
         </el-table-column>
         <el-table-column label="学科.阶段">
           <template slot-scope="scope">{{ scope.row.subject_name}}. {{ scope.row.step}}</template>
@@ -89,14 +87,14 @@
           </template>
         </el-table-column>
         <el-table-column label="访问量" prop="reads"></el-table-column>
-        <el-table-column label="操作" width= '200'>
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-button @click="showEdit(scope.row)" type="text">编辑</el-button>
             <el-button
               @click="status(scope.row)"
               type="text"
             >{{ scope.row.status === 1 ? "禁用" : "启用" }}</el-button>
-            <el-button  @click="remove(scope.row)" type="text">删除</el-button>
+            <el-button @click="remove(scope.row)" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -112,12 +110,138 @@
         :total="total"
       ></el-pagination>
     </el-card>
+    <!-- 新增对话框 -->
+    <el-dialog title="新增题库测试" :visible.sync="addFormVisible" fullscreen="true" @opened="mounted">
+      <el-form :model="addForm" ref="addForm" :rules="addRules">
+        <el-form-item label="学科" prop="subject">
+          <el-select v-model="addForm.subject" placeholder="请选择学科">
+            <el-option label="JavaScript" value="JavaScript"></el-option>
+            <el-option label="前端" value="前端"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="阶段" prop="step">
+          <el-select v-model="addForm.step" placeholder="请选择阶段">
+            <el-option label="初级" value="初级"></el-option>
+            <el-option label="中级" value="中级"></el-option>
+            <el-option label="高级" value="高级"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="企业" prop="enterprise">
+          <el-select v-model="addForm.enterprise" placeholder="请选择企业">
+            <el-option label="黑马" value="黑马"></el-option>
+            <el-option label="阿里" value="阿里"></el-option>
+            <el-option label="京东" value="京东"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="题型" prop="type">
+          <el-radio v-model="addForm.type" label="1">单选</el-radio>
+          <el-radio v-model="addForm.type" label="2">多选</el-radio>
+          <el-radio v-model="addForm.type" label="3">简答</el-radio>
+        </el-form-item>
+        <el-form-item label="难度" prop="difficulty">
+          <el-radio v-model="addForm.difficulty" label="1">简单</el-radio>
+          <el-radio v-model="addForm.difficulty" label="2">一般</el-radio>
+          <el-radio v-model="addForm.difficulty" label="3">困难</el-radio>
+        </el-form-item>
+        <el-form-item label="试题标题" prop="title"></el-form-item>
+        <el-form-item>
+          <!-- 富文本盒子 -->
+          <div id="editor" ref="editor"></div>
+        </el-form-item>
+        <!-- 第一个单选 -->
+        <el-form-item label="单选" prop="radio">
+          <el-radio-group v-model="radio">
+            <div class="radio-box">
+              <el-radio :label="1">A</el-radio>
+              <el-input placeholder></el-input>
+              <!-- 上传 -->
+              <el-upload
+                class="avatar-uploader"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">上传缩略图</el-button>
+                <el-button type="info">上传缩略图</el-button>
+              </el-upload>
+            </div>
+          </el-radio-group>
+        </el-form-item>
+        <!-- 第二个单选 -->
+        <el-form-item label=" " >
+          <el-radio-group >
+            <div class="radio-box">
+              <el-radio :label="3">A</el-radio>
+              <el-input placeholder></el-input>
+              <!-- 上传 -->
+              <el-upload
+                class="avatar-uploader"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">上传缩略图</el-button>
+                <el-button type="info">上传缩略图</el-button>
+              </el-upload>
+            </div>
+          </el-radio-group>
+        </el-form-item>
+        <!-- 第三个单选 -->
+        <el-form-item label=" " >
+          <el-radio-group >
+            <div class="radio-box">
+              <el-radio :label="3">A</el-radio>
+              <el-input placeholder></el-input>
+              <!-- 上传 -->
+              <el-upload
+                class="avatar-uploader"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">上传缩略图</el-button>
+                <el-button type="info">上传缩略图</el-button>
+              </el-upload>
+            </div>
+          </el-radio-group>
+        </el-form-item>
+        <!-- 第四个单选 -->
+        <el-form-item label=" " >
+          <el-radio-group >
+            <div class="radio-box">
+              <el-radio :label="3">A</el-radio>
+              <el-input placeholder></el-input>
+              <!-- 上传 -->
+              <el-upload
+                class="avatar-uploader"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">上传缩略图</el-button>
+                <el-button type="info">上传缩略图</el-button>
+              </el-upload>
+            </div>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitAdd">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 // 导入 接口
 import { questionList } from "../../../api/api.js";
+// 导入 富文本编辑器
+import wangEditor from "wangeditor";
 export default {
   name: "questionList",
   data() {
@@ -133,7 +257,33 @@ export default {
       // 页码数组
       pageSizes: [3, 6, 9],
       // 总条数
-      total: 0
+      total: 0,
+      // 新增表单的数据
+      addForm: {},
+      // 新增表单是否显示
+      addFormVisible: false,
+      // label的宽度不设置不能都在一行
+      formLabelWidth: "100px",
+      // 表单验证规则
+      addRules: {
+        subject: [
+          { required: true, message: "学科不能为空哦", trigger: "blur" }
+        ],
+        step: [{ required: true, message: "不能为空哦", trigger: "blur" }],
+        enterprise: [
+          { required: true, message: "企业不能为空哦", trigger: "blur" }
+        ],
+        city: [{ required: true, message: "城市不能为空哦", trigger: "blur" }],
+        type: [{ required: true, trigger: "blur" }],
+        difficulty: [{ required: true, trigger: "blur" }],
+        answer_analyze: [{ required: true, trigger: "blur" }],
+        title: [{ required: true, trigger: "blur" }],
+        radio: [{ required: true, trigger: "blur" }]
+      },
+      //   富文本编辑器
+      editor: undefined,
+      imageUrl: "",
+      radio: 1
     };
   },
   //   生命周期钩子
@@ -147,6 +297,8 @@ export default {
       this.total = res.data.data.pagination.total;
     });
   },
+  // 富文本编辑器钩子
+
   methods: {
     // 获取数据的逻辑
     getList() {
@@ -209,6 +361,29 @@ export default {
           }
         });
     },
+    mounted() {
+      if (this.editor == undefined) {
+        //   vue里面推荐
+        this.editor = new wangEditor(this.$refs.editor);
+        this.editor.create();
+      }
+    },
+    // 上传缩略图
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    }
   }
 };
 </script>
@@ -261,7 +436,6 @@ export default {
     width: 600px;
 
     .el-dialog__header {
-      text-align: center;
       background: linear-gradient(to right, #01c5fa, #1394fa);
 
       .el-dialog__title {
@@ -270,16 +444,47 @@ export default {
     }
 
     .el-dialog__body {
-      .el-form-item__label {
-        width: 61px;
-        height: 16px;
-        font-size: 15px;
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        color: rgba(76, 78, 84, 1);
-      }
-      .el-input__inner {
-        width: 100%;
+      display: flex;
+      justify-content: center;
+      .el-form {
+        width: 832px;
+        // background-color: #ccc;
+        .el-form-item__label {
+          width: 61px;
+          height: 16px;
+          font-size: 15px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: rgba(76, 78, 84, 1);
+        }
+        .el-form-item__content {
+          .el-radio-group {
+            .radio-box {
+              width: 771px;
+              display: flex;
+              align-items: center;
+              .el-input {
+                width: 476px;
+                margin-right: 21px;
+              }
+              .avatar-uploader {
+                .el-upload {
+                  width: 210px;
+                  height: 38px;
+                  .el-button {
+                    width: 100px;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .el-input__inner {
+          width: 100%;
+        }
+        .el-select {
+          width: 364px;
+        }
       }
     }
     .dialog-footer {
