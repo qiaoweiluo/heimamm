@@ -70,7 +70,11 @@
       <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%" stripe border>
         <el-table-column type="index" label="序号"></el-table-column>
-        <el-table-column prop="title" label="题目"></el-table-column>
+        <el-table-column prop="title" label="题目">
+            <template slot-scope="scope">
+                <span v-html="scope.row.title"></span>
+            </template>
+        </el-table-column>
         <el-table-column label="学科.阶段">
           <template slot-scope="scope">{{ scope.row.subject_name}}. {{ scope.row.step}}</template>
         </el-table-column>
