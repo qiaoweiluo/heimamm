@@ -49,7 +49,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="日期">
-          <el-select v-model="formInline.status" placeholder="请选择日期">
+          <el-select v-model="formInline.create_time" placeholder="请选择日期">
             <el-option label="启用" value="启用"></el-option>
             <el-option label="禁用" value="禁用"></el-option>
           </el-select>
@@ -70,6 +70,7 @@
       <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%" stripe border>
         <el-table-column type="index" label="序号"></el-table-column>
+        <!-- 默认数据的展示效果 不能满足自己的需求时 -->
         <el-table-column prop="title" label="题目">
             <template slot-scope="scope">
                 <span v-html="scope.row.title"></span>
@@ -88,15 +89,14 @@
           </template>
         </el-table-column>
         <el-table-column label="访问量" prop="reads"></el-table-column>
-        <el-table-column label="操作">
-          <!-- 插槽 -->
+        <el-table-column label="操作" width= '200'>
           <template slot-scope="scope">
             <el-button @click="showEdit(scope.row)" type="text">编辑</el-button>
             <el-button
               @click="status(scope.row)"
               type="text"
             >{{ scope.row.status === 1 ? "禁用" : "启用" }}</el-button>
-            <el-button v-power="['管理员']" @click="remove(scope.row)" type="text">删除</el-button>
+            <el-button  @click="remove(scope.row)" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -140,7 +140,7 @@ export default {
   created() {
     // 调用接口
     questionList.list({}).then(res => {
-    //   window.console.log(res);
+      window.console.log(res);
       // 赋值给table
       this.tableData = res.data.data.items;
       // 保存 总条数
@@ -193,7 +193,22 @@ export default {
       this.page = current;
       // 重新获取数据
       this.getList();
-    }
+    },
+    // 企业状态的启用禁用切换
+    status(data) {
+      // 接受传过来的一行数据
+      questionList
+        .status({
+          id: data.id,
+          status: data.status === 1 ? 0 : 1
+        })
+        .then(res => {
+          // window.console.log(res)
+          if (res.data.code === 200) {
+            this.getList();
+          }
+        });
+    },
   }
 };
 </script>
