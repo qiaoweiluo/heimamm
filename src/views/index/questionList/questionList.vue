@@ -55,7 +55,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="日期">
-          <el-date-picker v-model="formInline.create_date" type="date" placeholder="选择日期" prefix-icon="niubi"></el-date-picker>
+          <el-date-picker
+            v-model="formInline.create_date"
+            type="date"
+            placeholder="选择日期"
+            prefix-icon="niubi"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="标题" class="title">
           <el-input v-model="formInline.title"></el-input>
@@ -115,7 +120,7 @@
       ></el-pagination>
     </el-card>
     <!-- 新增对话框 -->
-    <el-dialog title="新增题库测试" :visible.sync="addFormVisible" fullscreen @opened="mounted">
+    <el-dialog title="新增题库" :visible.sync="addFormVisible" fullscreen @opened="opened">
       <el-form :model="addForm" ref="addForm" :rules="addRules">
         <el-form-item label="学科" prop="subject">
           <el-select v-model="addForm.subject" placeholder="请选择学科">
@@ -137,17 +142,17 @@
             <el-option label="京东" value="京东"></el-option>
           </el-select>
         </el-form-item>
-         <!-- 级联选择器 -->
+
+        <!-- 级联选择器 -->
         <el-form-item label="城市" prop="city">
           <el-cascader
             size="large"
             :options="options"
             v-model="addForm.city"
             :props="{value:'label'}"
-          >
-          </el-cascader>
+          ></el-cascader>
         </el-form-item>
-       
+
         <el-form-item label="题型" prop="type">
           <el-radio v-model="addForm.type" label="1">单选</el-radio>
           <el-radio v-model="addForm.type" label="2">多选</el-radio>
@@ -159,26 +164,82 @@
           <el-radio v-model="addForm.difficulty" label="3">困难</el-radio>
         </el-form-item>
         <el-form-item label="试题标题" prop="title"></el-form-item>
+        <!-- 标题富文本  -->
         <el-form-item>
-          <!-- 富文本盒子 -->
           <div id="editor" ref="editor"></div>
         </el-form-item>
-        <!-- 第一个单选 -->
+
+        <!-- 选项区域 单选 -->
         <el-form-item label="单选" prop="radio">
-          <el-radio-group v-model="radio">
+          <el-radio-group v-model="addForm.single_select_answer">
             <div class="radio-box">
-              <el-radio :label="1">A</el-radio>
-              <el-input placeholder></el-input>
+              <!-- :label = '1' 表示js代码去解析 -->
+              <!-- label = '1' 表示 字符串去解析 -->
+              <el-radio label="A">A</el-radio>
+              <!-- 文本框 -->
+              <el-input v-model="addForm.select_options[0].text" ></el-input>
               <!-- 上传 -->
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="actions"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
+                :on-success="aAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
               >
                 <el-button type="primary">上传缩略图</el-button>
-                <el-button type="info">上传缩略图</el-button>
+                <img :src="aImageURL" class="avatar" />
+              </el-upload>
+            </div>
+            <div class="radio-box">
+              <!-- :label = '1' 表示js代码去解析 -->
+              <!-- label = '1' 表示 字符串去解析 -->
+              <el-radio label="B">B</el-radio>
+              <!-- 文本框 -->
+              <el-input v-model="addForm.select_options[1].text" ></el-input>
+              <!-- 上传 -->
+              <el-upload
+                class="avatar-uploader"
+                :action="actions"
+                :show-file-list="false"
+                :on-success="bAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">上传缩略图</el-button>
+                <img :src="bImageURL" class="avatar" />
+              </el-upload>
+            </div>
+            <div class="radio-box">
+              <!-- :label = '1' 表示js代码去解析 -->
+              <!-- label = '1' 表示 字符串去解析 -->
+              <el-radio label="C">C</el-radio>
+              <!-- 文本框 -->
+              <el-input v-model="addForm.select_options[2].text" ></el-input>
+              <!-- 上传 -->
+              <el-upload
+                class="avatar-uploader"
+                :action="actions"
+                :show-file-list="false"
+                :on-success="cAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">上传缩略图</el-button>
+                <img :src="cImageURL" class="avatar" />
+              </el-upload>
+            </div>
+            <div class="radio-box">
+              <el-radio label="D">D</el-radio>
+              <!-- 文本框 -->
+              <el-input v-model="addForm.select_options[3].text" ></el-input>
+              <!-- 上传 -->
+              <el-upload
+                class="avatar-uploader"
+                :action="actions"
+                :show-file-list="false"
+                :on-success="dAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <el-button type="primary">上传缩略图</el-button>
+                <img :src="dImageURL" class="avatar" />
               </el-upload>
             </div>
           </el-radio-group>
@@ -189,7 +250,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取 消</el-button>
-        <el-button type="primary" >确 定</el-button>
+        <el-button type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -260,7 +321,7 @@ export default {
       addFormVisible: false,
       // label的宽度不设置不能都在一行
       formLabelWidth: "100px",
-      // 表单验证规则
+      // 新增表单验证规则
       addRules: {
         subject: [
           { required: true, message: "学科不能为空哦", trigger: "blur" }
@@ -274,23 +335,30 @@ export default {
         difficulty: [{ required: true, trigger: "blur" }],
         answer_analyze: [{ required: true, trigger: "blur" }],
         title: [{ required: true, trigger: "blur" }],
-        radio: [{ required: true, trigger: "blur" }],
+        radio: [{ required: true, trigger: "blur" }]
       },
-      //   富文本编辑器
+      // 标题富文本
       editor: undefined,
-      imageUrl: "",
+
       radio: 1,
       // 学科列表
       subjectArr: [],
       // 企业列表
-      enterpriseArr: []
+      enterpriseArr: [],
+      // 上传地址
+      actions: "http://127.0.0.1/heimamm/public/question/upload",
+      // 选项A的图片地址 
+      aImageURL: "",
+      bImageURL: "",
+      cImageURL: "",
+      dImageURL: "",
     };
   },
   // 初始数据的获取
   created() {
     // 调用接口
     questionList.list({}).then(res => {
-      window.console.log(res);
+      // window.console.log(res);
       // 赋值给table
       this.tableData = res.data.data.items;
       // 保存 总条数
@@ -363,7 +431,8 @@ export default {
           }
         });
     },
-    mounted() {
+    // 对话框打开方式
+    opened() {
       if (this.editor == undefined) {
         //   vue里面推荐
         this.editor = new wangEditor(this.$refs.editor);
@@ -372,8 +441,38 @@ export default {
     },
     // 上传缩略图
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      this.aImageURL = URL.createObjectURL(file.raw);
     },
+    // 上传成功
+    aAvatarSuccess(res, file) {
+      // window.console.log(res);
+      // window.console.log(file);
+      // 保存图片地址到选项中
+      this.addForm.select_options[0].image = res.data.url;
+      this.aImageURL = URL.createObjectURL(file.raw);
+    },
+    bAvatarSuccess(res, file) {
+      // window.console.log(res);
+      // window.console.log(file);
+      // 保存图片地址到选项中
+      this.addForm.select_options[1].image = res.data.url;
+      this.bImageURL = URL.createObjectURL(file.raw);
+    },
+    cAvatarSuccess(res, file) {
+      // window.console.log(res);
+      // window.console.log(file);
+      // 保存图片地址到选项中
+      this.addForm.select_options[2].image = res.data.url;
+      this.cImageURL = URL.createObjectURL(file.raw);
+    },
+    dAvatarSuccess(res, file) {
+      // window.console.log(res);
+      // window.console.log(file);
+      // 保存图片地址到选项中
+      this.addForm.select_options[3].image = res.data.url;
+      this.dImageURL = URL.createObjectURL(file.raw);
+    },
+    // 上传之前
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -457,14 +556,6 @@ export default {
             width: 100px;
           }
         }
-        // .el-form-item__label {
-        //   width: 61px;
-        //   height: 16px;
-        //   font-size: 15px;
-        //   font-family: Microsoft YaHei;
-        //   font-weight: 400;
-        //   color: rgba(76, 78, 84, 1);
-        // }
         .el-form-item__content {
           .el-radio-group {
             .radio-box {
@@ -476,12 +567,17 @@ export default {
                 margin-right: 21px;
               }
               .avatar-uploader {
+                display: inline;
                 .el-upload {
-                  width: 210px;
-                  height: 38px;
+                  // width: 178px;
+                  height: 178px;
+                  display: flex;
+                  align-items: center;
                   .el-button {
                     width: 100px;
+                    height: 38px;
                   }
+                  
                 }
               }
             }
@@ -498,6 +594,7 @@ export default {
     .dialog-footer {
       text-align: center;
     }
+    
   }
 }
 </style>
