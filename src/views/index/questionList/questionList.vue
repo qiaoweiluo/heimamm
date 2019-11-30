@@ -62,7 +62,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search">搜索</el-button>
-          <el-button @click="clear">清除</el-button>
+          <el-button @click="formInline = {}">清除</el-button>
           <el-button type="primary" @click="addFormVisible = true" icon="el-icon-plus">新增学科</el-button>
         </el-form-item>
       </el-form>
@@ -115,7 +115,7 @@
       ></el-pagination>
     </el-card>
     <!-- 新增对话框 -->
-    <el-dialog title="新增题库测试" :visible.sync="addFormVisible" fullscreen="true" @opened="mounted">
+    <el-dialog title="新增题库测试" :visible.sync="addFormVisible" fullscreen @opened="mounted">
       <el-form :model="addForm" ref="addForm" :rules="addRules">
         <el-form-item label="学科" prop="subject">
           <el-select v-model="addForm.subject" placeholder="请选择学科">
@@ -137,6 +137,17 @@
             <el-option label="京东" value="京东"></el-option>
           </el-select>
         </el-form-item>
+         <!-- 级联选择器 -->
+        <el-form-item label="城市" prop="city">
+          <el-cascader
+            size="large"
+            :options="options"
+            v-model="addForm.city"
+            :props="{value:'label'}"
+          >
+          </el-cascader>
+        </el-form-item>
+       
         <el-form-item label="题型" prop="type">
           <el-radio v-model="addForm.type" label="1">单选</el-radio>
           <el-radio v-model="addForm.type" label="2">多选</el-radio>
@@ -172,72 +183,13 @@
             </div>
           </el-radio-group>
         </el-form-item>
-        <!-- 第二个单选 -->
-        <el-form-item label=" ">
-          <el-radio-group>
-            <div class="radio-box">
-              <el-radio :label="3">A</el-radio>
-              <el-input placeholder></el-input>
-              <!-- 上传 -->
-              <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
-                <el-button type="primary">上传缩略图</el-button>
-                <el-button type="info">上传缩略图</el-button>
-              </el-upload>
-            </div>
-          </el-radio-group>
-        </el-form-item>
-        <!-- 第三个单选 -->
-        <el-form-item label=" ">
-          <el-radio-group>
-            <div class="radio-box">
-              <el-radio :label="3">A</el-radio>
-              <el-input placeholder></el-input>
-              <!-- 上传 -->
-              <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
-                <el-button type="primary">上传缩略图</el-button>
-                <el-button type="info">上传缩略图</el-button>
-              </el-upload>
-            </div>
-          </el-radio-group>
-        </el-form-item>
-        <!-- 第四个单选 -->
-        <el-form-item label=" ">
-          <el-radio-group>
-            <div class="radio-box">
-              <el-radio :label="3">A</el-radio>
-              <el-input placeholder></el-input>
-              <!-- 上传 -->
-              <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
-                <el-button type="primary">上传缩略图</el-button>
-                <el-button type="info">上传缩略图</el-button>
-              </el-upload>
-            </div>
-          </el-radio-group>
-        </el-form-item>
+
         <el-form-item label="解析视频" class="video"></el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitAdd">确 定</el-button>
+        <el-button type="primary" >确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -248,6 +200,8 @@
 import { questionList, subject, enterprise } from "../../../api/api.js";
 // 导入 富文本编辑器
 import wangEditor from "wangeditor";
+// 导入数据 城市数据
+import { regionData } from "element-china-area-data";
 export default {
   name: "questionList",
   data() {
@@ -264,8 +218,44 @@ export default {
       pageSizes: [3, 6, 9],
       // 总条数
       total: 0,
-      // 新增表单的数据
-      addForm: {},
+      // 新增的表格数据
+      addForm: {
+        type: "单选",
+        city: ["天津市", "市辖区"],
+        title: "",
+        answer_analyze: "",
+        select_options: [
+          {
+            label: "A",
+            text: "狗不理",
+            image: "upload/20191129/fd5f03a07d95e3948860240564b180e4.jpeg"
+          },
+          {
+            label: "B",
+            text: "猫不理",
+            image: "upload/20191129/e93e7bb72accda7f3159cdabc4203991.jpeg"
+          },
+          {
+            label: "C",
+            text: "麻花",
+            image: "upload/20191129/b7caf98be9d0aa6764b0112ba0dfa19e.jpeg"
+          },
+          {
+            label: "D",
+            text: "炸酱面",
+            image: "upload/20191129/4067f19ab53a5e8388ad3459e23110f0.jpeg"
+          }
+        ],
+        subject: 11,
+        step: "初级",
+        enterprise: 15,
+        difficulty: "简单",
+        single_select_answer: "A",
+        video: "upload/20191129/bd666ff11c11cc01f494d6ba49757a64.png",
+        remark: "好好吃东西哦"
+      },
+      // 省市区数据
+      options: regionData,
       // 新增表单是否显示
       addFormVisible: false,
       // label的宽度不设置不能都在一行
@@ -284,7 +274,7 @@ export default {
         difficulty: [{ required: true, trigger: "blur" }],
         answer_analyze: [{ required: true, trigger: "blur" }],
         title: [{ required: true, trigger: "blur" }],
-        radio: [{ required: true, trigger: "blur" }]
+        radio: [{ required: true, trigger: "blur" }],
       },
       //   富文本编辑器
       editor: undefined,
@@ -339,15 +329,6 @@ export default {
       this.page = 1;
       // 获取数据
       this.getList();
-    },
-    // 清除按钮点击事件
-    // resetForm(formInline) {
-    //   this.$refs[formInline].resetFields();
-    // }
-    // 注意采用vue自带的方法 需要在data里面设置一堆属性 不太方便
-    // 可以直接设置一点击事件 空对象赋值
-    clear() {
-      this.formInline = {};
     },
     // 页容量改变
     handleSizeChange(size) {
