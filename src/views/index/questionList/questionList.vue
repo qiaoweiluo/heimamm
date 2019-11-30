@@ -6,8 +6,12 @@
       <el-form :inline="true" ref="formInline" :model="formInline" class="demo-form-inline">
         <el-form-item label="学科">
           <el-select v-model="formInline.subject" placeholder="请选择学科">
-            <el-option label="JavaScript" value="JavaScript"></el-option>
-            <el-option label="前端" value="前端"></el-option>
+            <el-option
+              v-for="item in subjectArr"
+              :label="item.name"
+              :value="item.id"
+              :key="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="阶段">
@@ -19,9 +23,12 @@
         </el-form-item>
         <el-form-item label="企业">
           <el-select v-model="formInline.enterprise" placeholder="请选择企业">
-            <el-option label="黑马" value="黑马"></el-option>
-            <el-option label="阿里" value="阿里"></el-option>
-            <el-option label="京东" value="京东"></el-option>
+            <el-option
+              v-for="item in enterpriseArr"
+              :label="item.name"
+              :value="item.id"
+              :key="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="题型">
@@ -48,10 +55,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="日期">
-          <el-select v-model="formInline.create_time" placeholder="请选择日期">
-            <el-option label="启用" value="启用"></el-option>
-            <el-option label="禁用" value="禁用"></el-option>
-          </el-select>
+          <el-date-picker v-model="formInline.create_date" type="date" placeholder="选择日期" prefix-icon="niubi"></el-date-picker>
         </el-form-item>
         <el-form-item label="标题" class="title">
           <el-input v-model="formInline.title"></el-input>
@@ -169,8 +173,8 @@
           </el-radio-group>
         </el-form-item>
         <!-- 第二个单选 -->
-        <el-form-item label=" " >
-          <el-radio-group >
+        <el-form-item label=" ">
+          <el-radio-group>
             <div class="radio-box">
               <el-radio :label="3">A</el-radio>
               <el-input placeholder></el-input>
@@ -189,8 +193,8 @@
           </el-radio-group>
         </el-form-item>
         <!-- 第三个单选 -->
-        <el-form-item label=" " >
-          <el-radio-group >
+        <el-form-item label=" ">
+          <el-radio-group>
             <div class="radio-box">
               <el-radio :label="3">A</el-radio>
               <el-input placeholder></el-input>
@@ -209,8 +213,8 @@
           </el-radio-group>
         </el-form-item>
         <!-- 第四个单选 -->
-        <el-form-item label=" " >
-          <el-radio-group >
+        <el-form-item label=" ">
+          <el-radio-group>
             <div class="radio-box">
               <el-radio :label="3">A</el-radio>
               <el-input placeholder></el-input>
@@ -228,7 +232,9 @@
             </div>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="解析视频" class="video"></el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitAdd">确 定</el-button>
@@ -239,7 +245,7 @@
 
 <script>
 // 导入 接口
-import { questionList } from "../../../api/api.js";
+import { questionList, subject, enterprise } from "../../../api/api.js";
 // 导入 富文本编辑器
 import wangEditor from "wangeditor";
 export default {
@@ -283,10 +289,14 @@ export default {
       //   富文本编辑器
       editor: undefined,
       imageUrl: "",
-      radio: 1
+      radio: 1,
+      // 学科列表
+      subjectArr: [],
+      // 企业列表
+      enterpriseArr: []
     };
   },
-  //   生命周期钩子
+  // 初始数据的获取
   created() {
     // 调用接口
     questionList.list({}).then(res => {
@@ -295,6 +305,17 @@ export default {
       this.tableData = res.data.data.items;
       // 保存 总条数
       this.total = res.data.data.pagination.total;
+    });
+
+    // 企业数据
+    enterprise.list().then(res => {
+      // window.console.log(res);
+      this.enterpriseArr = res.data.data.items;
+    });
+    // 学科数据
+    subject.list().then(res => {
+      // window.console.log(res);
+      this.subjectArr = res.data.data.items;
     });
   },
   // 富文本编辑器钩子
@@ -403,6 +424,7 @@ export default {
           padding-right: 31px;
         }
       }
+
       .title {
         margin-right: 11px;
         .el-input {
@@ -449,14 +471,19 @@ export default {
       .el-form {
         width: 832px;
         // background-color: #ccc;
-        .el-form-item__label {
-          width: 61px;
-          height: 16px;
-          font-size: 15px;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          color: rgba(76, 78, 84, 1);
+        .vedio {
+          .el-form-item__label {
+            width: 100px;
+          }
         }
+        // .el-form-item__label {
+        //   width: 61px;
+        //   height: 16px;
+        //   font-size: 15px;
+        //   font-family: Microsoft YaHei;
+        //   font-weight: 400;
+        //   color: rgba(76, 78, 84, 1);
+        // }
         .el-form-item__content {
           .el-radio-group {
             .radio-box {
