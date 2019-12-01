@@ -285,7 +285,7 @@ export const questionList = {
   // 发布题目
   add(data) {
     return axios({
-      url: 'questions/add',
+      url: 'question/add',
       method: 'post',
       data
     });
