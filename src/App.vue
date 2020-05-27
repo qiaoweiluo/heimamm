@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  // 组件名133143654365zdgfhadrtgaSrgfar
+  // 组件名
   name : 'app'
 }
 </script>
